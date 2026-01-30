@@ -2,9 +2,9 @@ import 'dotenv/config';
 
 import express from 'express';
 
+import { config } from './src/utils/config';
 import { EnemyController } from './src/controllers/enemyController';
 import { EnemyService } from './src/services/enemyService';
-import { config } from './src/utils/config';
 import { EnemyRouter } from './src/routes/enemyRouter';
 const app = express();
 const port = config.PORT;

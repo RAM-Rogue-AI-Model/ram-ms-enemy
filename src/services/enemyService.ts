@@ -1,7 +1,10 @@
+import { LoggerProducer } from '../producers/LoggerProducer';
 import { CreateEnemyInput } from '../types/enemyInput';
 import { prisma } from '../utils/mariaConnection';
 
 class EnemyService {
+  private loggerProducer = new LoggerProducer();
+
   async create(data: CreateEnemyInput) {
     const dataSecured = {
       name: data.name,
@@ -10,7 +13,21 @@ class EnemyService {
       speed: data.speed,
       probability_attack: data.probability_attack,
     };
-    return prisma.enemy.create({ data: dataSecured });
+    const enemy = await prisma.enemy.create({ data: dataSecured });
+
+    try {
+      await this.loggerProducer.publish({
+        microservice: 'ENEMY',
+        action: 'INSERT',
+        level: 'INFO',
+        message: `Enemy created with id: ${enemy.id}`,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (err) {
+      console.error('Logger indisponible', err);
+    }
+
+    return enemy;
   }
 
   async list(random?: boolean, limit?: number) {
