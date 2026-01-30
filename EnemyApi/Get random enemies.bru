@@ -1,0 +1,15 @@
+meta {
+  name: Get random enemies
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://localhost:3004/enemy/
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

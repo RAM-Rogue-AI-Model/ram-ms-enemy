@@ -1,0 +1,31 @@
+meta {
+  name: Update Enemy
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:3004/enemy/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 0141cb14-cafb-4a4d-b38a-96bfef635c70
+}
+
+body:json {
+  {
+      "name": "gargouille",
+      "pv": 30,
+      "attack": 7,
+      "speed": 3,
+      "probability_attack": 60
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

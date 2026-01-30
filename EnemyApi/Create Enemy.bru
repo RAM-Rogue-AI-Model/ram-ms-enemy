@@ -1,0 +1,27 @@
+meta {
+  name: Create Enemy
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3004/enemy
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "name": "nom",
+      "pv": 20,
+      "attack": 7,
+      "speed": 3,
+      "probability_attack": 60
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

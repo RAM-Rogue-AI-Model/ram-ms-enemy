@@ -1,0 +1,15 @@
+meta {
+  name: Get All Enemies
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://localhost:3004/enemy/
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

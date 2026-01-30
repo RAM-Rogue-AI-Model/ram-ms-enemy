@@ -1,0 +1,20 @@
+meta {
+  name: Delete enemy
+  type: http
+  seq: 4
+}
+
+delete {
+  url: http://localhost:3004/enemy/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: 0141cb14-cafb-4a4d-b38a-96bfef635c70
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
