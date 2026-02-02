@@ -1,10 +1,10 @@
+import { send } from 'node:process';
 import { LoggerProducer } from '../producers/LoggerProducer';
 import { CreateEnemyInput } from '../types/enemyInput';
 import { prisma } from '../utils/mariaConnection';
+import { sendLog } from '../utils/message';
 
 class EnemyService {
-  private loggerProducer = new LoggerProducer();
-
   async create(data: CreateEnemyInput) {
     const dataSecured = {
       name: data.name,
@@ -13,19 +13,10 @@ class EnemyService {
       speed: data.speed,
       probability_attack: data.probability_attack,
     };
+
     const enemy = await prisma.enemy.create({ data: dataSecured });
 
-    try {
-      await this.loggerProducer.publish({
-        microservice: 'ENEMY',
-        action: 'INSERT',
-        level: 'INFO',
-        message: `Enemy created with id: ${enemy.id}`,
-        timestamp: new Date().toISOString(),
-      });
-    } catch (err) {
-      console.error('Logger indisponible', err);
-    }
+    sendLog('ENEMY', 'INSERT', 'INFO', `Enemy created with id: ${enemy.id}`);
 
     return enemy;
   }
@@ -39,22 +30,40 @@ class EnemyService {
     if (limit && limit > 0) {
       result = result.slice(0, limit);
     }
+
+    sendLog(
+      'ENEMY',
+      'OTHER',
+      'INFO',
+      `Listed enemies${random ? ' in random order' : ''}${
+        limit ? ` with limit ${limit}` : ''
+      }`
+    );
+
     return result;
   }
 
   async getById(id: string) {
-    return prisma.enemy.findUnique({
+    let result = prisma.enemy.findUnique({
       where: { id },
     });
+
+    sendLog('ENEMY', 'OTHER', 'INFO', `Fetched enemy with id: ${id}`);
+    return result;
   }
 
   async update(id: string, data: Partial<CreateEnemyInput>) {
+    sendLog('ENEMY', 'UPDATE', 'INFO', `Enemy updated with id: ${id}`);
+
     return prisma.enemy.update({
       where: { id },
       data,
     });
   }
+
   async delete(id: string) {
+    sendLog('ENEMY', 'REMOVE', 'INFO', `Enemy deleted with id: ${id}`);
+
     return prisma.enemy.delete({
       where: { id },
     });
