@@ -15,7 +15,10 @@ class EnemyService {
     };
 
     const enemy = await prisma.enemy.create({ data: dataSecured });
-
+    if (!enemy) {
+      sendLog('ENEMY', 'INSERT', 'ERROR', 'Failed to create enemy');
+      throw new Error('Failed to create enemy');
+    }
     sendLog('ENEMY', 'INSERT', 'INFO', `Enemy created with id: ${enemy.id}`);
 
     return enemy;
@@ -44,29 +47,65 @@ class EnemyService {
   }
 
   async getById(id: string) {
-    let result = prisma.enemy.findUnique({
+    const result = await prisma.enemy.findUnique({
       where: { id },
     });
+
+    if (!result) {
+      sendLog('ENEMY', 'OTHER', 'WARN', `Enemy not found with id: ${id}`);
+      return null;
+    }
 
     sendLog('ENEMY', 'OTHER', 'INFO', `Fetched enemy with id: ${id}`);
     return result;
   }
 
   async update(id: string, data: Partial<CreateEnemyInput>) {
-    sendLog('ENEMY', 'UPDATE', 'INFO', `Enemy updated with id: ${id}`);
+    const existingEnemy = await prisma.enemy.findUnique({
+      where: { id },
+    });
+    if (!existingEnemy) {
+      sendLog(
+        'ENEMY',
+        'UPDATE',
+        'WARN',
+        `Enemy not found for update with id: ${id}`
+      );
+      throw new Error('Enemy not found');
+    }
 
-    return prisma.enemy.update({
+    const result = await prisma.enemy.update({
       where: { id },
       data,
     });
+    if (!result) {
+      sendLog(
+        'ENEMY',
+        'UPDATE',
+        'ERROR',
+        `Failed to update enemy with id: ${id}`
+      );
+      throw new Error('Failed to update enemy');
+    }
+    sendLog('ENEMY', 'UPDATE', 'INFO', `Enemy updated with id: ${id}`);
+    return result;
   }
 
   async delete(id: string) {
-    sendLog('ENEMY', 'REMOVE', 'INFO', `Enemy deleted with id: ${id}`);
-
-    return prisma.enemy.delete({
+    const result = await prisma.enemy.delete({
       where: { id },
     });
+    if (!result) {
+      sendLog(
+        'ENEMY',
+        'REMOVE',
+        'ERROR',
+        `Failed to delete enemy with id: ${id}`
+      );
+      throw new Error('Failed to delete enemy');
+    }
+    sendLog('ENEMY', 'REMOVE', 'INFO', `Enemy deleted with id: ${id}`);
+    return result;
   }
 }
 

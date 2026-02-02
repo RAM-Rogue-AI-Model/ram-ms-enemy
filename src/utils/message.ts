@@ -2,7 +2,7 @@ import { LoggerProducer } from '../producers/LoggerProducer';
 
 const loggerProducer = new LoggerProducer();
 
-type LogLevel = 'INFO' | 'WARN' | 'ERROR';
+type LogLevel = 'INFO' | 'WARN' | 'ERROR' | 'DEBUG';
 type EnemyAction = 'INSERT' | 'UPDATE' | 'REMOVE' | 'OTHER';
 
 export async function sendLog(
