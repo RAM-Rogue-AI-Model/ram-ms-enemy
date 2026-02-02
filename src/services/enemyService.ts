@@ -1,5 +1,4 @@
-import { send } from 'node:process';
-import { LoggerProducer } from '../producers/LoggerProducer';
+import { error } from 'console';
 import { CreateEnemyInput } from '../types/enemyInput';
 import { prisma } from '../utils/mariaConnection';
 import { sendLog } from '../utils/message';
@@ -13,99 +12,142 @@ class EnemyService {
       speed: data.speed,
       probability_attack: data.probability_attack,
     };
-
-    const enemy = await prisma.enemy.create({ data: dataSecured });
-    if (!enemy) {
-      sendLog('ENEMY', 'INSERT', 'ERROR', 'Failed to create enemy');
-      throw new Error('Failed to create enemy');
+    try {
+      const enemy = await prisma.enemy.create({ data: dataSecured });
+      void sendLog(
+        'ENEMY',
+        'INSERT',
+        'INFO',
+        `Enemy created with id: ${enemy.id}`
+      );
+      return enemy;
+    } catch (error) {
+      void sendLog(
+        'ENEMY',
+        'INSERT',
+        'ERROR',
+        `Failed to create enemy: ${error}`
+      );
+      throw new Error(`Failed to create enemy: ${error}`);
     }
-    sendLog('ENEMY', 'INSERT', 'INFO', `Enemy created with id: ${enemy.id}`);
-
-    return enemy;
   }
 
   async list(random?: boolean, limit?: number) {
-    const queryOptions: any = {};
-    let result = await prisma.enemy.findMany();
-    if (random && result.length > 1) {
-      result = result.sort(() => 0.5 - Math.random());
+    try {
+      let result = await prisma.enemy.findMany();
+      if (random && result.length > 1) {
+        result = result.sort(() => 0.5 - Math.random());
+      }
+      if (limit && limit > 0) {
+        result = result.slice(0, limit);
+      }
+      void sendLog(
+        'ENEMY',
+        'OTHER',
+        'INFO',
+        `Listed enemies${random ? ' in random order' : ''}${
+          limit ? ` with limit ${limit}` : ''
+        }`
+      );
+      return result;
+    } catch (error) {
+      void sendLog(
+        'ENEMY',
+        'OTHER',
+        'ERROR',
+        `Failed to list enemies: ${error}`
+      );
+      throw new Error(`Failed to list enemies: ${error}`);
     }
-    if (limit && limit > 0) {
-      result = result.slice(0, limit);
-    }
-
-    sendLog(
-      'ENEMY',
-      'OTHER',
-      'INFO',
-      `Listed enemies${random ? ' in random order' : ''}${
-        limit ? ` with limit ${limit}` : ''
-      }`
-    );
-
-    return result;
   }
 
   async getById(id: string) {
-    const result = await prisma.enemy.findUnique({
-      where: { id },
-    });
-
-    if (!result) {
-      sendLog('ENEMY', 'OTHER', 'WARN', `Enemy not found with id: ${id}`);
-      return null;
+    try {
+      const result = await prisma.enemy.findUnique({
+        where: { id },
+      });
+      if (result === null) {
+        void sendLog(
+          'ENEMY',
+          'OTHER',
+          'WARN',
+          `Enemy not found with id: ${id}`
+        );
+        return null;
+      }
+      void sendLog('ENEMY', 'OTHER', 'INFO', `Fetched enemy with id: ${id}`);
+      return result;
+    } catch (error) {
+      void sendLog(
+        'ENEMY',
+        'OTHER',
+        'ERROR',
+        `Failed to fetch enemy with id ${id}: ${error}`
+      );
+      throw new Error(`Failed to fetch enemy with id ${id}: ${error}`);
     }
-
-    sendLog('ENEMY', 'OTHER', 'INFO', `Fetched enemy with id: ${id}`);
-    return result;
   }
 
   async update(id: string, data: Partial<CreateEnemyInput>) {
-    const existingEnemy = await prisma.enemy.findUnique({
-      where: { id },
-    });
-    if (!existingEnemy) {
-      sendLog(
-        'ENEMY',
-        'UPDATE',
-        'WARN',
-        `Enemy not found for update with id: ${id}`
-      );
-      throw new Error('Enemy not found');
-    }
+    try {
+      const existingEnemy = await prisma.enemy.findUnique({
+        where: { id },
+      });
+      if (!existingEnemy) {
+        void sendLog(
+          'ENEMY',
+          'UPDATE',
+          'WARN',
+          `Enemy not found for update with id: ${id}`
+        );
+        throw new Error('Enemy not found');
+      }
 
-    const result = await prisma.enemy.update({
-      where: { id },
-      data,
-    });
-    if (!result) {
-      sendLog(
+      const result = await prisma.enemy.update({
+        where: { id },
+        data,
+      });
+      void sendLog('ENEMY', 'UPDATE', 'INFO', `Enemy updated with id: ${id}`);
+      return result;
+    } catch (error) {
+      void sendLog(
         'ENEMY',
         'UPDATE',
         'ERROR',
-        `Failed to update enemy with id: ${id}`
+        `Failed to update enemy with id ${id}: ${error}`
       );
-      throw new Error('Failed to update enemy');
+      throw new Error(`Failed to update enemy with id ${id}: ${error}`);
     }
-    sendLog('ENEMY', 'UPDATE', 'INFO', `Enemy updated with id: ${id}`);
-    return result;
   }
 
   async delete(id: string) {
-    const result = await prisma.enemy.delete({
-      where: { id },
-    });
-    if (!result) {
-      sendLog(
+    try {
+      const existingEnemy = await prisma.enemy.findUnique({
+        where: { id },
+      });
+      if (!existingEnemy) {
+        void sendLog(
+          'ENEMY',
+          'REMOVE',
+          'WARN',
+          `Enemy not found for delete with id: ${id}`
+        );
+        throw new Error('Enemy not found');
+      }
+
+      const result = await prisma.enemy.delete({
+        where: { id },
+      });
+      return result;
+    } catch (error) {
+      void sendLog(
         'ENEMY',
         'REMOVE',
         'ERROR',
-        `Failed to delete enemy with id: ${id}`
+        `Failed to delete enemy with id ${id}: ${error}`
       );
-      throw new Error('Failed to delete enemy');
+      throw new Error(`Failed to delete enemy with id ${id}: ${error}`);
     }
-    sendLog('ENEMY', 'REMOVE', 'INFO', `Enemy deleted with id: ${id}`);
-    return result;
   }
 }
 
