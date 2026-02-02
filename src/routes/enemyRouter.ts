@@ -1,6 +1,7 @@
 import express, { Router } from 'express';
 
 import { EnemyController } from '../controllers/enemyController';
+import { authenticate } from '../utils/auth';
 
 class EnemyRouter {
   public router: Router;
@@ -10,22 +11,22 @@ class EnemyRouter {
 
     this.router
       .route('/')
-      .post(async (req, res) => {
+      .post(authenticate, async (req, res) => {
         await enemyController.create(req, res);
       })
-      .get(async (req, res) => {
+      .get(authenticate, async (req, res) => {
         await enemyController.list(req, res);
       });
 
     this.router
       .route('/:id')
-      .get(async (req, res) => {
+      .get(authenticate, async (req, res) => {
         await enemyController.getById(req, res);
       })
-      .put(async (req, res) => {
+      .put(authenticate, async (req, res) => {
         await enemyController.update(req, res);
       })
-      .delete(async (req, res) => {
+      .delete(authenticate, async (req, res) => {
         await enemyController.delete(req, res);
       });
   }
