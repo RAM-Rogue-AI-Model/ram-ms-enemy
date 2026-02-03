@@ -36,6 +36,7 @@ class EnemyController {
     const random = randomParam === 'true';
     const limit = limitParam ? Number.parseInt(limitParam, 10) : undefined;
     const enemies = await this.service.list(random, limit);
+    console.log(enemies)
     res.json(enemies);
   }
 

@@ -6,8 +6,17 @@ import { config } from './utils/config';
 import { EnemyController } from './controllers/enemyController';
 import { EnemyService } from './services/enemyService';
 import { EnemyRouter } from './routes/enemyRouter';
+import cors from "cors"
+
 const app = express();
 const port = config.PORT;
+
+app.use(
+  cors({
+    origin: [config.API_GATEWAY_URL],
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
