@@ -1,0 +1,150 @@
+openapi: 3.0.3
+info:
+  title: RAM Enemy Microservice API
+  version: 1.0.0
+  description: API RAM - Enemy microservice
+servers:
+  - url: http://localhost:3004
+    description: Serveur local
+paths:
+  /enemy:
+    get:
+      summary: Liste tous les ennemis
+      description: Retourne la liste de tous les ennemis. Peut retourner un nombre limité et/ou aléatoire d'ennemis.
+      parameters:
+        - in: query
+          name: random
+          schema:
+            type: boolean
+          description: Retourner les ennemis dans un ordre aléatoire
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+          description: Limite le nombre d'ennemis retournés
+      responses:
+        '200':
+          description: Liste des ennemis
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Enemy'
+    post:
+      summary: Crée un nouvel ennemi
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEnemyInput'
+      responses:
+        '201':
+          description: Ennemi créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enemy'
+        '400':
+          description: Erreur de validation ou de création
+  /enemy/{id}:
+    get:
+      summary: Récupère un ennemi par son ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ennemi trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enemy'
+        '404':
+          description: Ennemi non trouvé
+    put:
+      summary: Met à jour un ennemi
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEnemyInput'
+      responses:
+        '200':
+          description: Ennemi mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enemy'
+        '400':
+          description: Erreur de validation ou de mise à jour
+        '404':
+          description: Ennemi non trouvé
+    delete:
+      summary: Supprime un ennemi
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Ennemi supprimé
+        '404':
+          description: Ennemi non trouvé
+components:
+  schemas:
+    Enemy:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        pv:
+          type: integer
+        attack:
+          type: integer
+        speed:
+          type: integer
+        probability_attack:
+          type: number
+      required:
+        - id
+        - name
+        - pv
+        - attack
+        - speed
+        - probability_attack
+    CreateEnemyInput:
+      type: object
+      properties:
+        name:
+          type: string
+        pv:
+          type: integer
+        attack:
+          type: integer
+        speed:
+          type: integer
+        probability_attack:
+          type: number
+      required:
+        - name
+        - pv
+        - attack
+        - speed
+        - probability_attack
