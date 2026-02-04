@@ -1,4 +1,3 @@
-import { error } from 'console';
 import { CreateEnemyInput } from '../types/enemyInput';
 import { prisma } from '../utils/mariaConnection';
 import { sendLog } from '../utils/message';
@@ -26,9 +25,9 @@ class EnemyService {
         'ENEMY',
         'INSERT',
         'ERROR',
-        `Failed to create enemy: ${error}`
+        `Failed to create enemy: ${String(error)}`
       );
-      throw new Error(`Failed to create enemy: ${error}`);
+      throw new Error(`Failed to create enemy: ${String(error)}`);
     }
   }
 
@@ -55,9 +54,9 @@ class EnemyService {
         'ENEMY',
         'OTHER',
         'ERROR',
-        `Failed to list enemies: ${error}`
+        `Failed to list enemies: ${String(error)}`
       );
-      throw new Error(`Failed to list enemies: ${error}`);
+      throw new Error(`Failed to list enemies: ${String(error)}`);
     }
   }
 
@@ -82,9 +81,9 @@ class EnemyService {
         'ENEMY',
         'OTHER',
         'ERROR',
-        `Failed to fetch enemy with id ${id}: ${error}`
+        `Failed to fetch enemy with id ${id}: ${String(error)}`
       );
-      throw new Error(`Failed to fetch enemy with id ${id}: ${error}`);
+      throw new Error(`Failed to fetch enemy with id ${id}: ${String(error)}`);
     }
   }
 
@@ -114,9 +113,9 @@ class EnemyService {
         'ENEMY',
         'UPDATE',
         'ERROR',
-        `Failed to update enemy with id ${id}: ${error}`
+        `Failed to update enemy with id ${id}: ${String(error)}`
       );
-      throw new Error(`Failed to update enemy with id ${id}: ${error}`);
+      throw new Error(`Failed to update enemy with id ${id}: ${String(error)}`);
     }
   }
 
@@ -144,9 +143,9 @@ class EnemyService {
         'ENEMY',
         'REMOVE',
         'ERROR',
-        `Failed to delete enemy with id ${id}: ${error}`
+        `Failed to delete enemy with id ${id}: ${String(error)}`
       );
-      throw new Error(`Failed to delete enemy with id ${id}: ${error}`);
+      throw new Error(`Failed to delete enemy with id ${id}: ${String(error)}`);
     }
   }
 }

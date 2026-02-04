@@ -1,7 +1,8 @@
-import { configType } from '../types/config';
-import dotenv from "dotenv"
+import dotenv from 'dotenv';
 
-dotenv.config()
+import { configType } from '../types/config';
+
+dotenv.config();
 
 const config: configType = {
   PORT: Number(process.env.PORT ?? 3004),
@@ -12,7 +13,7 @@ const config: configType = {
   DATABASE_PORT: Number(process.env.DATABASE_PORT ?? 3304),
   DATABASE_DB_NAME: process.env.DATABASE_DB_NAME ?? 'ram-ms-enemy-db',
   INTERNAL_SECRET: process.env.INTERNAL_SECRET ?? 'internal_secret',
-  API_GATEWAY_URL: process.env.API_GATEWAY_URL ?? "http://localhost:3001",
+  API_GATEWAY_URL: process.env.API_GATEWAY_URL ?? 'http://localhost:3001',
   RABBITMQ_URL:
     process.env.RABBITMQ_URL ?? 'amqp://guest:guest@rabbitmq_test:5672',
 };
