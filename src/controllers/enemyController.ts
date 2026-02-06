@@ -40,7 +40,7 @@ class EnemyController {
   }
 
   async getById(req: Request, res: Response) {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const enemy = await this.service.getById(id);
     if (!enemy) {
       return res.status(404).json({ error: 'Enemy not found' });
@@ -49,7 +49,7 @@ class EnemyController {
   }
 
   async update(req: Request, res: Response) {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const data = req.body as Partial<CreateEnemyInput>;
     try {
       const updatedEnemy = await this.service.update(id, data);
@@ -61,7 +61,7 @@ class EnemyController {
   }
 
   async delete(req: Request, res: Response) {
-    const { id } = req.params;
+    const id  = req.params.id as string;
     try {
       await this.service.delete(id);
       res.status(204).send();

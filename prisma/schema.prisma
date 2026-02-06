@@ -14,10 +14,11 @@ datasource db {
 }
 
 model Enemy {
-  id           String           @id @default(uuid())
-  name         String
-  pv           Int
-  attack       Int
-  speed        Int
-  probability_attack  Int
+  id                 String  @id @default(uuid())
+  name               String
+  pv                 Int
+  attack             Int
+  speed              Int
+  probability_attack Int
+  is_boss            Boolean @default(false)
 }
