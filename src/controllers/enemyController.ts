@@ -17,7 +17,8 @@ class EnemyController {
         !body.pv ||
         !body.attack ||
         !body.speed ||
-        !body.probability_attack
+        !body.probability_attack ||
+        body.is_boss === undefined
       ) {
         return res.status(400).json({ error: 'Missing required fields' });
       }
@@ -61,7 +62,7 @@ class EnemyController {
   }
 
   async delete(req: Request, res: Response) {
-    const id  = req.params.id as string;
+    const id = req.params.id as string;
     try {
       await this.service.delete(id);
       res.status(204).send();

@@ -10,6 +10,7 @@ class EnemyService {
       attack: data.attack,
       speed: data.speed,
       probability_attack: data.probability_attack,
+      is_boss: data.is_boss,
     };
     try {
       const enemy = await prisma.enemy.create({ data: dataSecured });
@@ -34,7 +35,11 @@ class EnemyService {
   async list(random?: boolean, limit?: number) {
     try {
       const bossChance = Math.random();
-      const whereClause = random ? (bossChance < 0.2 ? { is_boss: true } : {}) : {};
+      const whereClause = random
+        ? bossChance < 0.2
+          ? { is_boss: true }
+          : {}
+        : {};
       let result = await prisma.enemy.findMany({
         where: whereClause,
       });

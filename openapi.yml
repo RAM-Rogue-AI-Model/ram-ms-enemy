@@ -122,6 +122,8 @@ components:
           type: integer
         probability_attack:
           type: number
+        is_boss:
+          type: boolean
       required:
         - id
         - name
@@ -129,6 +131,7 @@ components:
         - attack
         - speed
         - probability_attack
+        - is_boss
     CreateEnemyInput:
       type: object
       properties:
@@ -142,9 +145,12 @@ components:
           type: integer
         probability_attack:
           type: number
+        is_boss:
+          type: boolean
       required:
         - name
         - pv
         - attack
         - speed
         - probability_attack
+        - is_boss
