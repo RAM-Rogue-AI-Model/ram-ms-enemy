@@ -61,7 +61,7 @@ class EnemyController {
   }
 
   async delete(req: Request, res: Response) {
-    const id  = req.params.id as string;
+    const id = req.params.id as string;
     try {
       await this.service.delete(id);
       res.status(204).send();
