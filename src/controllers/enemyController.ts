@@ -17,7 +17,7 @@ class EnemyController {
         !body.pv ||
         !body.attack ||
         !body.speed ||
-        !body.probability_attack || 
+        !body.probability_attack ||
         body.is_boss === undefined
       ) {
         return res.status(400).json({ error: 'Missing required fields' });
