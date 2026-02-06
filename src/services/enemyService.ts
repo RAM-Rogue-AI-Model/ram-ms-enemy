@@ -10,6 +10,7 @@ class EnemyService {
       attack: data.attack,
       speed: data.speed,
       probability_attack: data.probability_attack,
+      is_boss: data.is_boss,
     };
     try {
       const enemy = await prisma.enemy.create({ data: dataSecured });
